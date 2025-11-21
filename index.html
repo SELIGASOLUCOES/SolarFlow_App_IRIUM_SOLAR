@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SolarFlow | Multi-Dias</title>
+    <title>SolarFlow | Relatório GPS v20</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0044cc">
-    <link rel="apple-touch-icon" href="logo.png">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary: #0044cc; --bg: #f8fafc; --text: #0f172a; --border: #cbd5e1; --success: #16a34a; }
+        :root { --primary: #0044cc; --bg: #f8fafc; --text: #0f172a; --border: #cbd5e1; --success: #16a34a; --error: #dc2626; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 120px; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 160px; }
 
         /* HEADER */
         .app-header {
@@ -23,13 +21,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
         }
         .brand { font-size: 1.2rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        
-        /* INDICADOR DE SALVAMENTO */
-        .db-status {
-            font-size: 0.7rem; font-weight: 700; color: #64748b; background: #f1f5f9;
-            padding: 5px 10px; border-radius: 20px; display: flex; align-items: center; gap: 5px;
-        }
-        .db-status.saving { color: #eab308; background: #fef9c3; }
+        .db-status { font-size: 0.7rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 5px 10px; border-radius: 20px; }
         .db-status.saved { color: #16a34a; background: #dcfce7; }
 
         /* CONTAINER */
@@ -37,14 +29,19 @@
 
         /* DADOS */
         .project-card { background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .input-modern {
-            width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;
-            font-size: 0.95rem; background: #f8fafc; margin-bottom: 10px; font-family: inherit;
+        
+        .input-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+        .input-group { flex: 1; min-width: 140px; }
+        .input-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        
+        .input-modern { 
+            width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; 
+            font-size: 0.95rem; background: #f8fafc; font-family: inherit; transition: 0.3s;
         }
-        .gps-btn {
-            background: #eff6ff; color: #0044cc; padding: 12px; border-radius: 10px; font-weight: 700;
-            text-align: center; border: 1px solid #bfdbfe; cursor: pointer; display: flex; justify-content: center; gap: 8px;
-        }
+        .input-modern.error { border-color: var(--error); background: #fef2f2; animation: shake 0.3s; }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+
+        .gps-btn { background: #eff6ff; color: #0044cc; padding: 12px; border-radius: 10px; font-weight: 700; text-align: center; border: 1px solid #bfdbfe; cursor: pointer; display: flex; justify-content: center; gap: 8px; }
 
         /* SEÇÕES */
         .section-title {
@@ -55,10 +52,11 @@
         /* CARDS */
         .photo-card {
             background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;
-            margin-bottom: 15px; position: relative; overflow: hidden;
+            margin-bottom: 15px; position: relative; overflow: hidden; transition: 0.2s;
         }
         .photo-card.done { border-left: 5px solid var(--success); background: #fafffc; }
         .photo-card.na { opacity: 0.6; background: #f1f5f9; border-style: dashed; }
+        .photo-card.error { border: 2px solid var(--error); box-shadow: 0 0 10px rgba(220, 38, 38, 0.2); }
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .card-title h4 { margin: 0; font-size: 1rem; font-weight: 700; }
@@ -67,57 +65,66 @@
         /* BOTÕES */
         .action-row { display: flex; gap: 10px; }
         .btn-camera {
-            flex: 1; background: #f1f5f9; border: 2px dashed #cbd5e1; color: #64748b;
-            padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px; position: relative;
+            flex: 1; background: #f1f5f9; border: 2px dashed #cbd5e1; color: #64748b; padding: 12px;
+            border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative;
         }
         .btn-camera.has-img { background: #dcfce7; color: #166534; border-style: solid; border-color: #16a34a; }
         .file-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; z-index: 5; }
         
-        .btn-na {
-            width: 50px; border: 1px solid #cbd5e1; background: white; border-radius: 10px;
-            color: #94a3b8; font-weight: 700; cursor: pointer; z-index: 6;
-        }
+        .btn-na { width: 50px; border: 1px solid #cbd5e1; background: white; border-radius: 10px; color: #94a3b8; font-weight: 700; }
         .btn-na.active { background: #64748b; color: white; border-color: #64748b; }
 
         /* PREVIEW */
         .preview-container { margin-top: 10px; display: none; }
         .preview-img { width: 100%; border-radius: 10px; border: 1px solid #ddd; }
-        .watermark-caption { font-size: 0.7rem; color: #64748b; text-align: center; margin-top: 4px; }
+        .watermark-caption { font-size: 0.7rem; color: #64748b; text-align: center; margin-top: 4px; white-space: pre-wrap; }
+
+        /* EXTRAS */
+        .btn-add-extra {
+            width: 100%; padding: 15px; border: 2px dashed #0044cc; background: #eff6ff; color: #0044cc;
+            border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer; display: flex; justify-content: center; gap: 10px;
+        }
+        .extra-input { border: none; border-bottom: 1px solid #ccc; width: 100%; font-weight: bold; font-size: 1rem; color: #0044cc; padding: 5px; }
+        .btn-delete-card { position: absolute; top: 10px; right: 10px; background: #fee2e2; color: red; border: none; border-radius: 50%; width: 25px; height: 25px; font-weight: bold; }
 
         /* VALIDAÇÃO */
         .validation-box { margin-top: 30px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 16px; padding: 20px; }
         canvas { width: 100%; height: 150px; background: white; border: 1px dashed #cbd5e1; border-radius: 8px; margin-top: 10px; }
 
         /* FOOTER */
-        .fab-footer {
+        .share-footer {
             position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            padding: 15px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); display: flex; gap: 10px; z-index: 900;
+            padding: 15px; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 10px; z-index: 900;
         }
-        .btn-action {
-            flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 1rem;
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
+        .share-row { display: flex; gap: 10px; }
+        .btn-share {
+            flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; opacity: 0.5; pointer-events: none; transition: 0.3s;
         }
+        .btn-share.active { opacity: 1; pointer-events: all; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-telegram { background: #0088cc; color: white; }
         .btn-pdf { background: var(--primary); color: white; }
-        .btn-reset { background: #fee2e2; color: #ef4444; flex: 0.4; font-size: 0.9rem; }
+        
+        .validation-msg { font-size: 0.75rem; text-align: center; color: var(--error); font-weight: 600; display: none; }
 
         /* PRINT */
         .print-header { display: none; }
         @media print {
             @page { size: A4; margin: 10mm; }
             body { background: white; padding: 0; }
-            .app-header, .fab-footer, .btn-camera, .btn-na, .gps-btn, .file-input { display: none !important; }
+            .app-header, .share-footer, .btn-camera, .btn-na, .gps-btn, .file-input, .btn-add-extra, .btn-delete-card { display: none !important; }
             .print-header { display: block; border-bottom: 2px solid #000; margin-bottom: 20px; }
             .print-logo { font-size: 20px; font-weight: bold; color: var(--primary); }
             .print-meta { display: flex; justify-content: space-between; font-size: 12px; margin-top: 5px; }
             .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-            .photo-card { break-inside: avoid; border: 1px solid #ccc; padding: 10px; box-shadow: none; }
-            .photo-card.na { display: none; }
+            .photo-card { break-inside: avoid; border: 1px solid #ccc; padding: 10px; box-shadow: none; display: block !important; }
+            .photo-card.na { display: none !important; }
             .preview-container { display: block !important; margin-top: 5px; }
             .preview-img { height: 200px; object-fit: contain; border: none; }
             .section-title { grid-column: span 2; border-bottom: 2px solid #000; page-break-after: avoid; }
             .validation-box { break-inside: avoid; border: 1px solid #000; background: white; }
-            canvas { border: 1px solid #000; }
+            .extra-input { border: none; padding: 0; }
         }
     </style>
 </head>
@@ -131,249 +138,159 @@
         <div><strong>Data:</strong> <span id="p-date"></span></div>
     </div>
     <div class="print-meta" style="margin-top:5px; background:#eee; padding:5px;">
-        <div style="width:100%"><strong>Local:</strong> <span id="p-address"></span></div>
+        <div style="width:100%"><strong>Local:</strong> <span id="p-address"></span> <span id="p-gps" style="font-size:0.9em; color:#666;"></span></div>
     </div>
 </div>
 
 <div class="app-header">
-    <div class="brand"><i class="fas fa-bolt"></i> SolarFlow v14</div>
-    <div class="db-status" id="dbStatus"><i class="fas fa-check"></i> Pronto</div>
+    <div class="brand"><i class="fas fa-bolt"></i> SolarFlow v20</div>
+    <div class="db-status" id="dbStatus"><i class="fas fa-database"></i> Salvo</div>
 </div>
 
 <div class="container">
 
     <div class="project-card">
-        <input type="text" id="clientName" class="input-modern" placeholder="Nome do Cliente" oninput="autoSave()">
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="osNumber" class="input-modern" placeholder="Nº OS" oninput="autoSave()">
-            <input type="text" id="sysPower" class="input-modern" placeholder="kWp" oninput="autoSave()">
+        <div class="input-row">
+            <div class="input-group">
+                <span class="input-label">Cliente *</span>
+                <input type="text" id="clientName" class="input-modern required" placeholder="Nome Completo" oninput="validateAll()">
+            </div>
+            <div class="input-group">
+                <span class="input-label">Nº OS *</span>
+                <input type="text" id="osNumber" class="input-modern required" placeholder="0000" oninput="validateAll()">
+            </div>
         </div>
-        <input type="text" id="addressInput" class="input-modern" placeholder="Endereço (Auto GPS)" oninput="autoSave()">
-        <div class="gps-btn" onclick="initGPS()"><i class="fas fa-satellite-dish"></i> <span id="gpsText">Capturar GPS</span></div>
+        
+        <div class="input-row">
+            <div class="input-group">
+                <span class="input-label">Potência *</span>
+                <input type="text" id="sysPower" class="input-modern required" placeholder="kWp" oninput="validateAll()">
+            </div>
+            <div class="input-group" style="flex: 2;">
+                <span class="input-label">Endereço *</span>
+                <input type="text" id="addressInput" class="input-modern required" placeholder="Aguardando GPS..." oninput="validateAll()">
+            </div>
+        </div>
+        
+        <div class="gps-btn" onclick="initGPS()"><i class="fas fa-satellite-dish"></i> <span id="gpsText">Capturar GPS & Coordenadas</span></div>
     </div>
 
-    <div class="photo-grid">
-
-        <div class="section-title">01. Início e Estrutura</div>
-        <div class="photo-card" id="card-roof">
-            <div class="card-header"><div><div class="card-title"><h4>Vistoria do Telhado</h4><p>Panorâmica pré-instalação.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-roof')"></div></div>
-            <div class="preview-container"><img id="img-roof" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-hooks">
-            <div class="card-header"><div><div class="card-title"><h4>Fixação (Ganchos)</h4><p>Detalhe na viga.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-hooks')"></div></div>
-            <div class="preview-container"><img id="img-hooks" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-pu">
-            <div class="card-header"><div><div class="card-title"><h4>Vedação (PU)</h4><p>Zoom na impermeabilização.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-pu')"></div></div>
-            <div class="preview-container"><img id="img-pu" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
+    <div class="photo-grid" id="mainGrid">
+        <div class="section-title">01. Infraestrutura</div>
+        <div class="photo-card" id="card-roof"><div class="card-header"><div><div class="card-title"><h4>Vistoria Telhado</h4><p>Panorâmica.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-roof')"></div></div><div class="preview-container"><img id="img-roof" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-hooks"><div class="card-header"><div><div class="card-title"><h4>Fixação</h4><p>Ganchos/Trilhos.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-hooks')"></div></div><div class="preview-container"><img id="img-hooks" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-pu"><div class="card-header"><div><div class="card-title"><h4>Vedação (PU)</h4><p>Zoom no parafuso.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-pu')"></div></div><div class="preview-container"><img id="img-pu" class="preview-img"><div class="watermark-caption"></div></div></div>
 
         <div class="section-title">02. Equipamentos</div>
-        <div class="photo-card" id="card-modules">
-            <div class="card-header"><div><div class="card-title"><h4>Módulos (Final)</h4><p>Panorâmica limpa.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-modules')"></div></div>
-            <div class="preview-container"><img id="img-modules" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-inv-sn">
-            <div class="card-header"><div><div class="card-title"><h4>Inversor (S/N)</h4><p>Etiqueta lateral.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-inv-sn')"></div></div>
-            <div class="preview-container"><img id="img-inv-sn" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-inv-front">
-            <div class="card-header"><div><div class="card-title"><h4>Inversor (Frontal)</h4><p>Visor/Leds ligados.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-inv-front')"></div></div>
-            <div class="preview-container"><img id="img-inv-front" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-qr">
-            <div class="card-header"><div><div class="card-title"><h4>Datalogger (QR)</h4><p>Stick Wi-Fi.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-qr')"></div></div>
-            <div class="preview-container"><img id="img-qr" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-stringbox">
-            <div class="card-header"><div><div class="card-title"><h4>String Box</h4><p>Proteções CC/CA.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-stringbox')"></div></div>
-            <div class="preview-container"><img id="img-stringbox" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
+        <div class="photo-card" id="card-modules"><div class="card-header"><div><div class="card-title"><h4>Módulos</h4><p>Panorâmica Final.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-modules')"></div></div><div class="preview-container"><img id="img-modules" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-inv-sn"><div class="card-header"><div><div class="card-title"><h4>Inversor (S/N)</h4><p>Etiqueta lateral.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-inv-sn')"></div></div><div class="preview-container"><img id="img-inv-sn" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-inv-front"><div class="card-header"><div><div class="card-title"><h4>Inversor (Visor)</h4><p>Equipamento ligado.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-inv-front')"></div></div><div class="preview-container"><img id="img-inv-front" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-qr"><div class="card-header"><div><div class="card-title"><h4>Datalogger (QR)</h4><p>Stick Wi-Fi.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-qr')"></div></div><div class="preview-container"><img id="img-qr" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-stringbox"><div class="card-header"><div><div class="card-title"><h4>String Box</h4><p>Proteções CC/CA.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-stringbox')"></div></div><div class="preview-container"><img id="img-stringbox" class="preview-img"><div class="watermark-caption"></div></div></div>
 
         <div class="section-title">03. Elétrica</div>
-        <div class="photo-card" id="card-measure">
-            <div class="card-header"><div><div class="card-title"><h4>Medições</h4><p>Alicate amperímetro.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-measure')"></div></div>
-            <div class="preview-container"><img id="img-measure" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-ground">
-            <div class="card-header"><div><div class="card-title"><h4>Aterramento</h4><p>Conexão na haste.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-ground')"></div></div>
-            <div class="preview-container"><img id="img-ground" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-connection">
-            <div class="card-header"><div><div class="card-title"><h4>Ponto de Conexão</h4><p>Emenda/Disjuntor Padrão.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-connection')"></div></div>
-            <div class="preview-container"><img id="img-connection" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
-        <div class="photo-card" id="card-meter">
-            <div class="card-header"><div><div class="card-title">Medidor + Placa</div><div class="card-desc">Sinalização obrigatória.</div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-meter')"></div></div>
-            <div class="preview-container"><img id="img-meter" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
+        <div class="photo-card" id="card-measure"><div class="card-header"><div><div class="card-title"><h4>Medições</h4><p>Alicate amperímetro.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-measure')"></div></div><div class="preview-container"><img id="img-measure" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-ground"><div class="card-header"><div><div class="card-title"><h4>Aterramento</h4><p>Conexão na haste.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-ground')"></div></div><div class="preview-container"><img id="img-ground" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-connection"><div class="card-header"><div><div class="card-title"><h4>Conexão AC</h4><p>Ponto de conexão.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-connection')"></div></div><div class="preview-container"><img id="img-connection" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="card-meter"><div class="card-header"><div><div class="card-title">Medidor + Placa</div><div class="card-desc">Sinalização obrigatória.</div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-meter')"></div></div><div class="preview-container"><img id="img-meter" class="preview-img"><div class="watermark-caption"></div></div></div>
 
         <div class="section-title">04. Entrega</div>
-        <div class="photo-card" id="card-app">
-            <div class="card-header"><div><div class="card-title"><h4>App Online</h4><p>Print do monitoramento.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div>
-            <div class="action-row"><div class="btn-camera"><i class="fas fa-image"></i> Upload<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-app')"></div></div>
-            <div class="preview-container"><img id="img-app" class="preview-img"><div class="watermark-caption"></div></div>
-        </div>
-
+        <div class="photo-card" id="card-app"><div class="card-header"><div><div class="card-title"><h4>App Online</h4><p>Print do monitoramento.</p></div></div><button class="na-toggle btn-na" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-image"></i> Upload<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-app')"></div></div><div class="preview-container"><img id="img-app" class="preview-img"><div class="watermark-caption"></div></div></div>
     </div>
 
-    <div class="validation-box">
-        <label style="font-weight:bold; font-size:0.9rem;">Técnico Responsável</label>
-        <input type="text" id="techName" class="input-modern" placeholder="Seu Nome" oninput="autoSave()">
+    <div class="section-title">05. Extras</div>
+    <div id="extrasContainer" class="photo-grid"></div>
+    <button class="btn-add-extra" onclick="addNewExtraCard()" style="width:100%; padding:15px; border:2px dashed #0044cc; background:#eff6ff; color:#0044cc; border-radius:12px; font-weight:700; margin-top:10px; cursor:pointer; display:flex; justify-content:center; gap:10px;"><i class="fas fa-plus-circle"></i> Adicionar Foto Extra</button>
 
-        <div class="photo-card" id="card-selfie" style="border:2px solid #0044cc; margin-top:15px;">
-            <div class="card-header"><div><div class="card-title" style="color:#0044cc">Selfie de Validação</div></div></div>
+    <div class="validation-box">
+        <span class="input-label">Técnico Responsável *</span>
+        <input type="text" id="techName" class="input-modern required" placeholder="Seu Nome Completo" oninput="validateAll()">
+
+        <div class="photo-card required-card" id="card-selfie" style="border:2px solid #0044cc; margin-top:15px;">
+            <div class="card-header"><div><div class="card-title" style="color:#0044cc">Selfie de Validação *</div></div></div>
             <div class="action-row"><div class="btn-camera" style="background:#eff6ff; color:#0044cc; border-color:#0044cc"><i class="fas fa-user-check"></i> Selfie<input type="file" class="file-input" accept="image/*" capture="user" onchange="processImage(this, 'img-selfie', true)"></div></div>
             <div class="preview-container"><img id="img-selfie" class="preview-img"><div class="watermark-caption"></div></div>
         </div>
 
-        <div style="margin-top:20px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><strong>Assinatura Cliente</strong><button onclick="clearSig()" style="border:none; background:none; color:red;">Limpar</button></div>
-            <canvas id="sigCanvas"></canvas>
+        <div class="photo-card" id="card-client-pic" style="border:2px solid #16a34a; margin-top:15px;">
+            <div class="card-header"><div><div class="card-title" style="color:#16a34a">Foto Cliente (Aceite)</div></div></div>
+            <div class="action-row"><div class="btn-camera" style="background:#f0fdf4; color:#16a34a; border-color:#16a34a"><i class="fas fa-id-badge"></i> Foto Cliente<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-client-pic', true)"></div></div>
+            <div class="preview-container"><img id="img-client-pic" class="preview-img"><div class="watermark-caption"></div></div>
         </div>
     </div>
 
 </div>
 
-<div class="fab-footer">
-    <button class="btn-action btn-reset" onclick="resetProject()">NOVO PROJETO</button>
-    <button class="btn-action btn-pdf" onclick="generatePDF()">GERAR PDF</button>
+<div class="share-footer">
+    <div class="validation-msg" id="valMsg">Preencha todos os campos obrigatórios para enviar!</div>
+    <div class="share-row">
+        <button class="btn-share btn-pdf" id="btnPdf" onclick="tryGeneratePDF()"><i class="fas fa-file-pdf"></i> GERAR PDF</button>
+        <button class="btn-share btn-whatsapp" id="btnWhatsapp" onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i> WHATSAPP</button>
+    </div>
+    <button onclick="if(confirm('Limpar tudo?')) resetProject()" style="background:none; border:none; color:#999; font-size:0.8rem; text-decoration:underline; margin-top:5px;">Limpar e começar novo</button>
 </div>
 
 <script>
-    // --- BANCO DE DADOS INDEXEDDB ---
-    const dbName = "SolarFlowDB";
-    const storeName = "projectData";
-    let db;
-
-    // Inicializa Banco
+    const dbName = "SolarFlowDB_v20"; const storeName = "projectData"; let db; let gpsCoords = "Sem GPS";
     const request = indexedDB.open(dbName, 1);
-    request.onupgradeneeded = (event) => {
-        db = event.target.result;
-        db.createObjectStore(storeName, { keyPath: "id" });
-    };
-    request.onsuccess = (event) => {
-        db = event.target.result;
-        loadFromDB(); // Carrega dados ao abrir
-    };
+    request.onupgradeneeded = (event) => { db = event.target.result; db.createObjectStore(storeName, { keyPath: "id" }); };
+    request.onsuccess = (event) => { db = event.target.result; loadFromDB(); };
 
-    // --- ESTADO GLOBAL ---
-    let gpsCoords = "Sem GPS";
-    const statusBadge = document.getElementById('dbStatus');
+    function validateAll() {
+        const client = document.getElementById('clientName').value.trim();
+        const os = document.getElementById('osNumber').value.trim();
+        const addr = document.getElementById('addressInput').value.trim();
+        const tech = document.getElementById('techName').value.trim();
+        const selfie = document.getElementById('img-selfie').src;
+        const hasSelfie = selfie && selfie.includes('data:');
+        const isValid = client && os && addr && tech && hasSelfie;
+        const btns = document.querySelectorAll('.btn-share');
+        const msg = document.getElementById('valMsg');
+        if(isValid) { btns.forEach(b => b.classList.add('active')); msg.style.display = 'none'; }
+        else { btns.forEach(b => b.classList.remove('active')); msg.style.display = 'block'; }
+        autoSave();
+    }
 
-    // --- 1. FUNÇÕES DE DB ---
-    function saveToDB(key, value) {
-        statusBadge.innerHTML = '<i class="fas fa-sync fa-spin"></i> Salvando...';
-        statusBadge.className = "db-status saving";
-        
-        const transaction = db.transaction([storeName], "readwrite");
-        const store = transaction.objectStore(storeName);
-        store.put({ id: key, data: value });
-        
-        transaction.oncomplete = () => {
+    function tryGeneratePDF() { if(validateForm()) window.print(); }
+
+    function validateForm() {
+        let missing = [];
+        if(!document.getElementById('clientName').value) missing.push("Nome Cliente");
+        if(!document.getElementById('osNumber').value) missing.push("Nº OS");
+        if(!document.getElementById('techName').value) missing.push("Técnico");
+        const selfie = document.getElementById('img-selfie').src;
+        if(!selfie || !selfie.includes('data:')) missing.push("Selfie do Técnico");
+        if(missing.length>0) { alert("Faltam dados: " + missing.join(", ")); return false; }
+        return true;
+    }
+
+    function share(app) {
+        if(validateForm()) {
+            window.print();
             setTimeout(() => {
-                statusBadge.innerHTML = '<i class="fas fa-check"></i> Salvo';
-                statusBadge.className = "db-status saved";
-            }, 500);
-        };
+                const client = document.getElementById('clientName').value;
+                const os = document.getElementById('osNumber').value;
+                const text = `✅ *INSTALAÇÃO FINALIZADA*\n👤 Cliente: ${client}\n🔢 OS: ${os}\n📍 GPS: ${gpsCoords}\n\n📄 Relatório PDF salvo.`;
+                const url = app === 'whatsapp' ? `https://wa.me/?text=${encodeURIComponent(text)}` : `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+            }, 1000);
+        }
     }
 
-    function getFromDB(key, callback) {
-        const transaction = db.transaction([storeName], "readonly");
-        const store = transaction.objectStore(storeName);
-        const request = store.get(key);
-        request.onsuccess = () => {
-            if (request.result) callback(request.result.data);
-        };
-    }
-
-    // --- 2. AUTO SAVE (TEXTOS) ---
-    function autoSave() {
-        const data = {
-            client: document.getElementById('clientName').value,
-            os: document.getElementById('osNumber').value,
-            power: document.getElementById('sysPower').value,
-            addr: document.getElementById('addressInput').value,
-            tech: document.getElementById('techName').value
-        };
-        saveToDB("textData", data);
-        updatePrintHeader();
-    }
-
-    // --- 3. CARREGAR DADOS ---
-    function loadFromDB() {
-        // Carrega Textos
-        getFromDB("textData", (data) => {
-            if(data) {
-                document.getElementById('clientName').value = data.client || '';
-                document.getElementById('osNumber').value = data.os || '';
-                document.getElementById('sysPower').value = data.power || '';
-                document.getElementById('addressInput').value = data.addr || '';
-                document.getElementById('techName').value = data.tech || '';
-                updatePrintHeader();
-            }
-        });
-
-        // Carrega Imagens (Loop pelos IDs)
-        const imgIds = ['img-roof', 'img-hooks', 'img-pu', 'img-modules', 'img-inv-sn', 'img-inv-front', 'img-qr', 'img-stringbox', 'img-measure', 'img-ground', 'img-connection', 'img-meter', 'img-app', 'img-selfie'];
-        
-        imgIds.forEach(id => {
-            getFromDB(id, (imgData) => {
-                if(imgData) {
-                    const img = document.getElementById(id);
-                    img.src = imgData.src;
-                    img.parentElement.style.display = 'block';
-                    img.nextElementSibling.innerText = imgData.caption;
-                    
-                    // Atualiza UI do botão
-                    const card = img.closest('.photo-card');
-                    const btn = card.querySelector('.btn-camera');
-                    btn.classList.add('has-img');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Foto OK <input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, \''+id+'\')">';
-                    card.classList.add('done');
-                }
-            });
-        });
-        
-        initGPS();
-    }
-
-    // --- 4. GPS ---
     function initGPS() {
-        const btn = document.getElementById('gpsText');
-        const input = document.getElementById('addressInput');
+        const btn = document.getElementById('gpsText'); const input = document.getElementById('addressInput');
         if(!navigator.geolocation) { btn.innerText = "GPS Off"; return; }
         btn.innerText = "Buscando...";
         navigator.geolocation.getCurrentPosition(async (pos) => {
-            const lat = pos.coords.latitude; const lon = pos.coords.longitude;
-            gpsCoords = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+            const lat = pos.coords.latitude.toFixed(5); const lon = pos.coords.longitude.toFixed(5);
+            gpsCoords = `${lat}, ${lon}`;
+            document.getElementById('p-address').innerHTML = `${input.value} <br> <small>GPS: ${gpsCoords}</small>`;
             try {
                 if(!input.value) {
                     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
                     const data = await res.json();
                     input.value = `${data.address.road||''}, ${data.address.city||''} - ${data.address.state||''}`;
-                    autoSave();
+                    validateAll();
                 }
                 btn.innerText = "GPS OK ✔";
             } catch(e) { btn.innerText = "GPS (Sem Endereço)"; }
@@ -381,133 +298,121 @@
         }, () => btn.innerText = "Tentar GPS", {enableHighAccuracy:true});
     }
 
-    // --- 5. FOTO ENGINE ---
-    function processImage(input, imgId, isSelfie = false) {
+    function processImage(input, imgId, isValidation = false) {
         if (input.files && input.files[0]) {
-            const file = input.files[0];
-            const reader = new FileReader();
-            const card = input.closest('.photo-card');
-            const btn = input.parentElement;
-            const previewBox = card.querySelector('.preview-container');
-            const imgEl = document.getElementById(imgId);
-            const txtEl = imgEl.nextElementSibling;
-
+            const file = input.files[0]; const reader = new FileReader();
+            const card = input.closest('.photo-card'); const btn = input.parentElement;
+            const imgEl = document.getElementById(imgId); const txtEl = imgEl.nextElementSibling;
             btn.style.opacity = 0.5;
-
             reader.onload = (e) => {
-                const img = new Image();
-                img.src = e.target.result;
+                const img = new Image(); img.src = e.target.result;
                 img.onload = () => {
-                    const cvs = document.createElement('canvas');
-                    const ctx = cvs.getContext('2d');
-                    const maxW = 1024;
-                    let w = img.width; let h = img.height;
-                    if(w > h) { if(w > maxW) { h *= maxW/w; w = maxW; } }
-                    else { if(h > maxW) { w *= maxW/h; h = maxW; } }
-
-                    cvs.width = w; cvs.height = h;
-                    ctx.drawImage(img, 0, 0, w, h);
-
-                    // Marca d'água
-                    const barH = isSelfie ? 80 : 50;
-                    ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(0, h - barH, w, barH);
-                    ctx.fillStyle = "white"; ctx.font = "bold 18px sans-serif";
+                    const cvs = document.createElement('canvas'); const ctx = cvs.getContext('2d');
+                    const maxW = 1024; let w = img.width; let h = img.height;
+                    if(w > h) { if(w > maxW) { h *= maxW/w; w = maxW; } } else { if(h > maxW) { w *= maxW/h; h = maxW; } }
+                    cvs.width = w; cvs.height = h; ctx.drawImage(img, 0, 0, w, h);
                     
+                    // BARRA DE 3 LINHAS (70px altura)
+                    const barH = isValidation ? 90 : 70; 
+                    ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0, h - barH, w, barH);
+                    
+                    // LINHA 1: CLIENTE | DATA
+                    ctx.fillStyle = "white"; ctx.font = "bold 16px sans-serif";
                     const date = new Date().toLocaleString('pt-BR');
                     const client = document.getElementById('clientName').value || "SolarFlow";
-                    const loc = document.getElementById('addressInput').value || gpsCoords;
+                    ctx.fillText(`${client} | ${date}`, 15, h - barH + 25);
 
-                    if(isSelfie) {
-                        const tech = document.getElementById('techName').value;
-                        ctx.fillText(`Técnico: ${tech}`, 15, h - 45);
-                        ctx.font = "14px sans-serif";
-                        ctx.fillText(`${date} | ${gpsCoords}`, 15, h - 20);
-                    } else {
-                        ctx.fillText(`${client} | ${date}`, 15, h - 28);
-                        ctx.font = "12px sans-serif";
-                        ctx.fillText(loc.substring(0, 55), 15, h - 10);
+                    // LINHA 2: ENDEREÇO
+                    ctx.font = "12px sans-serif";
+                    const addr = document.getElementById('addressInput').value || "Sem endereço";
+                    ctx.fillText(addr.substring(0, 60), 15, h - barH + 45);
+
+                    // LINHA 3: GPS (Highlight)
+                    ctx.fillStyle = "#fbbf24"; // Amarelo destaque
+                    ctx.font = "bold 12px monospace";
+                    ctx.fillText(`GPS: ${gpsCoords}`, 15, h - 10);
+
+                    // Validação extra
+                    if(isValidation) {
+                        const tech = document.getElementById('techName').value || "Técnico";
+                        ctx.fillStyle = "#fff"; ctx.font = "bold 20px sans-serif";
+                        ctx.fillText(`VALIDADO POR: ${tech}`, 15, h - barH - 10);
                     }
 
                     const final = cvs.toDataURL('image/jpeg', 0.7);
-                    imgEl.src = final;
-                    previewBox.style.display = "block";
-                    
-                    const caption = isSelfie ? "Validação Biométrica" : loc;
-                    txtEl.innerText = caption;
-                    
-                    // SALVAR NO BANCO DE DADOS
-                    saveToDB(imgId, { src: final, caption: caption });
-
-                    btn.classList.add('has-img');
-                    btn.innerHTML = '<i class="fas fa-check"></i> OK <input type="file" class="file-input" accept="image/*" onchange="processImage(this, \''+imgId+'\')">';
-                    btn.style.opacity = 1;
-                    card.classList.add('done');
-                    card.classList.remove('na');
+                    imgEl.src = final; imgEl.parentElement.style.display = "block"; 
+                    txtEl.innerHTML = `${addr}<br><b>${gpsCoords}</b>`;
+                    btn.classList.add('has-img'); btn.innerHTML = '<i class="fas fa-check"></i> OK <input type="file" class="file-input" accept="image/*" onchange="processImage(this, \''+imgId+'\', '+isValidation+')">';
+                    btn.style.opacity = 1; card.classList.add('done'); card.classList.remove('na');
+                    if(imgId.startsWith('extra_')) saveExtra(imgId); else saveToDB(imgId, { src: final, caption: txtEl.innerHTML });
+                    validateAll();
                 };
             };
             reader.readAsDataURL(file);
         }
     }
 
-    // --- 6. UTILIDADES ---
-    function toggleNA(btn) {
-        const card = btn.closest('.photo-card');
-        card.classList.toggle('na');
-        card.classList.remove('done');
-        btn.classList.toggle('active');
+    function addNewExtraCard(id = null, titleVal = "", imgData = null) {
+        const container = document.getElementById('extrasContainer');
+        const uid = id || 'extra_' + Date.now();
+        const div = document.createElement('div'); div.className = 'photo-card extra-card'; div.id = 'card_' + uid;
+        div.innerHTML = `
+            <div class="card-header"><input type="text" class="extra-input" placeholder="Título da Foto" value="${titleVal}" oninput="saveExtra('${uid}')" id="title_${uid}" style="width:100%; border:none; border-bottom:1px solid #ccc; font-weight:bold; color:#0044cc; font-size:1rem;"><button class="btn-delete-card" onclick="removeExtra('${uid}')" style="position:absolute; top:10px; right:10px; background:#fee2e2; color:red; border:none; border-radius:50%; width:25px; height:25px;">×</button></div>
+            <div class="action-row"><div class="btn-camera ${imgData ? 'has-img' : ''}"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, '${uid}')"></div></div>
+            <div class="preview-container" style="${imgData ? 'display:block' : ''}"><img id="${uid}" class="preview-img" src="${imgData ? imgData.src : ''}"><div class="watermark-caption">${imgData ? imgData.caption : ''}</div></div>
+        `;
+        container.appendChild(div);
     }
+    function saveExtra(uid) {
+        const title = document.getElementById('title_'+uid).value;
+        const img = document.getElementById(uid).src;
+        const caption = document.getElementById(uid).nextElementSibling.innerHTML;
+        if(title || (img && img.length > 100)) saveToDB(uid, { src: img, caption: caption, title: title, isExtra: true });
+    }
+    function removeExtra(uid) { if(confirm("Remover?")) { document.getElementById('card_'+uid).remove(); const tx = db.transaction([storeName], "readwrite"); tx.objectStore(storeName).delete(uid); }}
 
+    function saveToDB(key, value) { const tx = db.transaction([storeName], "readwrite"); tx.objectStore(storeName).put({ id: key, data: value }); }
+    function autoSave() {
+        saveToDB("textData", {
+            client: document.getElementById('clientName').value,
+            os: document.getElementById('osNumber').value,
+            addr: document.getElementById('addressInput').value,
+            tech: document.getElementById('techName').value,
+            pow: document.getElementById('sysPower').value
+        });
+        updatePrintHeader();
+        validateAll();
+    }
+    function loadFromDB() {
+        const tx = db.transaction([storeName], "readonly");
+        tx.objectStore(storeName).getAll().onsuccess = (e) => {
+            e.target.result.forEach(item => {
+                if(item.id === "textData") {
+                    const d = item.data;
+                    document.getElementById('clientName').value = d.client||''; document.getElementById('osNumber').value = d.os||'';
+                    document.getElementById('addressInput').value = d.addr||''; document.getElementById('techName').value = d.tech||'';
+                    document.getElementById('sysPower').value = d.pow||''; updatePrintHeader();
+                } else if(item.id.startsWith('extra_')) { addNewExtraCard(item.id, item.data.title, item.data); }
+                else {
+                    const img = document.getElementById(item.id);
+                    if(img) {
+                        img.src = item.data.src; img.parentElement.style.display = 'block'; img.nextElementSibling.innerHTML = item.data.caption;
+                        img.closest('.photo-card').querySelector('.btn-camera').classList.add('has-img');
+                        img.closest('.photo-card').classList.add('done');
+                    }
+                }
+            });
+            initGPS();
+        };
+    }
+    function toggleNA(btn) { const c = btn.closest('.photo-card'); c.classList.toggle('na'); c.classList.remove('done'); btn.classList.toggle('active'); }
     function updatePrintHeader() {
         document.getElementById('p-client').innerText = document.getElementById('clientName').value;
         document.getElementById('p-os').innerText = document.getElementById('osNumber').value;
         document.getElementById('p-date').innerText = new Date().toLocaleDateString();
-        document.getElementById('p-address').innerText = document.getElementById('addressInput').value;
+        document.getElementById('p-address').innerHTML = document.getElementById('addressInput').value + ` <b>(GPS: ${gpsCoords})</b>`;
     }
-
-    function generatePDF() {
-        window.print();
-    }
-
-    function resetProject() {
-        if(confirm("ATENÇÃO: Isso apagará todas as fotos e iniciará um NOVO PROJETO. Continuar?")) {
-            const transaction = db.transaction([storeName], "readwrite");
-            const store = transaction.objectStore(storeName);
-            const req = store.clear();
-            req.onsuccess = () => {
-                alert("Projeto limpo! Iniciando novo...");
-                location.reload();
-            };
-        }
-    }
-
-    // ASSINATURA
-    const canvas = document.getElementById('sigCanvas');
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
-    
-    function resizeCanvas() { 
-        const r = Math.max(window.devicePixelRatio || 1, 1);
-        canvas.width = canvas.offsetWidth * r; canvas.height = canvas.offsetHeight * r;
-        ctx.scale(r, r); ctx.lineWidth = 2; ctx.strokeStyle = "#000";
-    }
-    window.addEventListener('load', resizeCanvas);
-
-    function getPos(e) {
-        const r = canvas.getBoundingClientRect();
-        const t = e.touches ? e.touches[0] : e;
-        return { x: t.clientX - r.left, y: t.clientY - r.top };
-    }
-    ['mousedown','touchstart'].forEach(e => canvas.addEventListener(e, (ev) => {
-        if(ev.cancelable) ev.preventDefault(); drawing=true; ctx.beginPath(); 
-        const {x,y} = getPos(ev); ctx.moveTo(x,y);
-    }));
-    ['mousemove','touchmove'].forEach(e => canvas.addEventListener(e, (ev) => {
-        if(!drawing) return; if(ev.cancelable) ev.preventDefault();
-        const {x,y} = getPos(ev); ctx.lineTo(x,y); ctx.stroke();
-    }));
-    ['mouseup','touchend'].forEach(e => canvas.addEventListener(e, () => drawing=false));
-    function clearSig() { ctx.clearRect(0,0,canvas.width,canvas.height); }
-
+    function resetProject() { if(confirm("Apagar tudo?")) { const tx = db.transaction([storeName], "readwrite"); tx.objectStore(storeName).clear(); tx.oncomplete = () => location.reload(); } }
 </script>
 </body>
 </html>

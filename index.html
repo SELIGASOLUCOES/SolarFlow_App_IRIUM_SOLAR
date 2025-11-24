@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SolarFlow | v24 Safe</title>
+    <title>SolarFlow | v24 Auto-Address</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0044cc">
@@ -11,38 +11,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { 
-            --primary: #0044cc; --bg: #f8fafc; --text: #0f172a; --border: #cbd5e1; 
-            --success: #16a34a; --sales: #7c3aed; --whatsapp: #25D366;
-        }
+        :root { --primary: #0044cc; --bg: #f8fafc; --text: #0f172a; --border: #cbd5e1; --success: #16a34a; --sales: #7c3aed; --error: #dc2626; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 160px; }
 
-        /* HEADER REFORMULADO */
-        .app-header {
-            background: white; padding: 15px 20px; position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+        /* HEADER */
+        .app-header { background: white; padding: 15px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .brand { font-size: 1.2rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        
-        /* Status e Botão Topo */
-        .header-actions { display: flex; align-items: center; gap: 10px; }
-        .db-status { font-size: 0.7rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 6px 12px; border-radius: 20px; }
+        .db-status { font-size: 0.7rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 5px 10px; border-radius: 20px; }
         .db-status.saved { color: #16a34a; background: #dcfce7; }
-        
-        .btn-top-reset {
-            background: #fee2e2; color: #ef4444; border: none; padding: 6px 12px; 
-            border-radius: 8px; font-weight: 700; font-size: 0.75rem; cursor: pointer;
-            display: flex; align-items: center; gap: 5px;
-        }
 
         /* TABS */
         .tab-container { display: flex; background: #f1f5f9; padding: 5px; border-radius: 12px; gap: 5px; }
-        .tab-btn {
-            flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
-            transition: 0.3s; color: #64748b; background: transparent; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.3s; color: #64748b; background: transparent; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .tab-btn.active-sales { background: white; color: var(--sales); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .tab-btn.active-install { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
@@ -52,89 +34,55 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* INPUTS & CARDS */
+        /* INPUTS */
         .project-card { background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
         .input-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
         .input-group { flex: 1; min-width: 140px; }
         .input-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
-        
-        .input-modern { 
-            width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; 
-            font-size: 0.95rem; background: #f8fafc; font-family: inherit; transition: 0.3s;
-        }
+        .input-modern { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background: #f8fafc; margin-bottom: 10px; transition: 0.3s; font-family: inherit; }
         .input-modern:focus { outline: 2px solid var(--primary); background: white; }
         .select-modern { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; font-size: 1rem; margin-top: 5px; }
 
         .gps-btn { background: #eff6ff; color: #0044cc; padding: 12px; border-radius: 10px; font-weight: 700; text-align: center; border: 1px solid #bfdbfe; cursor: pointer; display: flex; justify-content: center; gap: 8px; }
         .gps-btn.sales-mode { background: #f3e8ff; color: var(--sales); border-color: #d8b4fe; }
 
-        /* SEÇÕES */
-        .section-title {
-            font-size: 0.85rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px;
-            margin: 30px 0 10px 5px; border-left: 4px solid var(--primary); padding-left: 10px;
-        }
-
-        /* CARDS */
-        .photo-card {
-            background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px;
-            margin-bottom: 15px; position: relative; overflow: hidden; transition: 0.2s;
-        }
+        /* SEÇÕES & CARDS */
+        .section-title { font-size: 0.85rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 10px 5px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        .photo-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; position: relative; overflow: hidden; transition: 0.2s; }
         .photo-card.done { border-left: 5px solid var(--success); background: #fafffc; }
         .photo-card.pdf-mode { border-left: 5px solid var(--sales); background: #fbf7ff; }
         .photo-card.na { opacity: 0.6; background: #f1f5f9; border-style: dashed; }
-
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .card-title h4 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text); }
         .card-title p { margin: 3px 0 0; font-size: 0.8rem; color: #64748b; }
 
-        /* BOTÕES */
+        /* BOTÕES & AÇÕES */
         .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .btn-camera {
-            flex: 1; background: #f8fafc; border: 2px dashed #cbd5e1; color: #64748b; padding: 12px;
-            border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative;
-        }
+        .btn-camera { flex: 1; background: #f8fafc; border: 2px dashed #cbd5e1; color: #64748b; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
         .btn-camera.has-img { background: #dcfce7; color: #166534; border-style: solid; border-color: #16a34a; }
         .file-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; z-index: 5; }
-        
-        .btn-aux {
-            padding: 5px 10px; border: 1px solid #cbd5e1; background: white; border-radius: 8px;
-            color: #64748b; font-weight: 700; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; gap: 4px;
-        }
+        .btn-aux { padding: 5px 10px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; color: #64748b; font-weight: 700; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; gap: 4px; }
         .btn-aux.active-pdf { background: var(--sales); color: white; border-color: var(--sales); }
         .btn-aux.active-na { background: #64748b; color: white; border-color: #64748b; }
-
         .preview-container { margin-top: 10px; display: none; text-align: center; }
         .preview-img { width: 100%; border-radius: 10px; border: 1px solid #ddd; }
         .watermark-caption { font-size: 0.7rem; color: #64748b; text-align: center; margin-top: 4px; white-space: pre-wrap; }
 
-        /* EXTRAS */
-        .btn-add-extra {
-            width: 100%; padding: 15px; border: 2px dashed #0044cc; background: #eff6ff; color: #0044cc;
-            border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer; display: flex; justify-content: center; gap: 10px;
-        }
+        /* EXTRAS & VALIDAÇÃO */
+        .btn-add-extra { width: 100%; padding: 15px; border: 2px dashed #0044cc; background: #eff6ff; color: #0044cc; border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer; display: flex; justify-content: center; gap: 10px; }
         .extra-input { border: none; border-bottom: 1px solid #ccc; width: 100%; font-weight: bold; font-size: 1rem; color: #0044cc; padding: 5px; }
         .btn-delete-card { position: absolute; top: 10px; right: 10px; background: #fee2e2; color: red; border: none; border-radius: 50%; width: 25px; height: 25px; font-weight: bold; }
-
-        /* VALIDAÇÃO */
         .validation-box { margin-top: 30px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 16px; padding: 20px; }
         canvas { width: 100%; height: 150px; background: white; border: 1px dashed #cbd5e1; border-radius: 8px; margin-top: 10px; }
 
         /* FOOTER */
-        .fab-footer {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            padding: 15px; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); z-index: 900;
-            display: flex; flex-direction: column; gap: 10px;
-        }
+        .fab-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); z-index: 900; display: flex; flex-direction: column; gap: 10px; }
         .share-row { display: flex; gap: 10px; }
-        .btn-big {
-            flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 0.9rem;
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
-        }
+        .btn-big { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s; }
         .btn-pdf { background: var(--primary); color: white; }
         .btn-whatsapp { background: #25D366; color: white; }
         .btn-telegram { background: #0088cc; color: white; }
         .btn-reset { background: #fee2e2; color: #ef4444; flex: 0.3; font-size: 0.8rem; }
-        
         .validation-msg { font-size: 0.75rem; text-align: center; color: var(--error); font-weight: 600; display: none; }
 
         /* PRINT */
@@ -142,30 +90,25 @@
         @media print {
             @page { size: A4; margin: 10mm; }
             body { background: white; padding: 0; }
-            .app-header, .fab-footer, .btn-camera, .btn-aux, .gps-btn, .file-input, .btn-add-extra, .btn-delete-card, .tab-container { display: none !important; }
-            
+            .app-header, .fab-footer, .btn-camera, .btn-na, .gps-btn, .file-input, .btn-add-extra, .btn-delete-card, .tab-container, .btn-aux { display: none !important; }
             .print-header { display: block; border-bottom: 2px solid #000; margin-bottom: 20px; }
-            .print-logo { font-size: 24px; font-weight: bold; color: var(--primary); text-transform: uppercase; }
+            .print-logo { font-size: 20px; font-weight: bold; color: var(--primary); text-transform: uppercase; }
             .print-meta { display: flex; justify-content: space-between; font-size: 12px; margin-top: 5px; }
-            
             .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
             .photo-card { break-inside: avoid; border: 1px solid #ccc; padding: 10px; box-shadow: none; display: block !important; }
             .photo-card.na { display: none !important; }
-            
-            .preview-container { display: block !important; margin-top: 5px; }
+            .preview-container { display: block !important; margin-top: 5px; text-align: center; }
             .preview-img { height: 200px; object-fit: contain; border: none; }
-            
-            .card-title p { display: none; }
-            .card-title h4 { font-size: 14px; text-align: center; color: #000; margin-bottom: 5px; text-transform: uppercase; }
-            
-            .view-section { display: none !important; }
-            .view-section.active { display: block !important; }
-            
-            .photo-card.pdf-mode::after { content: "📄 DOCUMENTO ENVIADO VIA PDF"; display: block; padding: 20px; font-weight: bold; text-align: center; border: 2px dashed #ccc; background: #f9f9f9; }
-            
-            .section-title { grid-column: span 2; border-bottom: 2px solid #000; page-break-after: avoid; color: #000; }
+            .section-title { grid-column: span 2; border-bottom: 2px solid #000; page-break-after: avoid; }
             .validation-box { break-inside: avoid; border: 1px solid #000; background: white; }
             .extra-input { border: none; padding: 0; text-align: center; }
+            .card-title p { display: none; }
+            .card-title h4 { font-size: 14px; text-align: center; color: #000; margin-bottom: 5px; text-transform: uppercase; }
+            .photo-card.pdf-mode::after { content: "📄 DOCUMENTO ENVIADO VIA PDF"; display: block; padding: 20px; font-weight: bold; text-align: center; border: 2px dashed #ccc; background: #f9f9f9; }
+            .input-modern { border: none; padding: 0; font-weight: bold; font-size: 12px; background: transparent; }
+            .project-card { border: none; padding: 0; margin: 0; display: none; } 
+            .view-section { display: none !important; }
+            .view-section.active { display: block !important; }
         }
     </style>
 </head>
@@ -179,7 +122,7 @@
         <div><strong>Data:</strong> <span id="p-date"></span></div>
     </div>
     <div class="print-meta" style="margin-top:5px; background:#eee; padding:5px;">
-        <div style="width:100%"><strong>Local:</strong> <span id="p-address"></span> <span id="p-gps" style="font-size:0.8em"></span></div>
+        <div style="width:100%"><strong>Local:</strong> <span id="p-address"></span> <br><span id="p-gps" style="font-size:0.8em; color:#555;"></span></div>
     </div>
     <div class="print-meta" style="border:none; padding-top:5px;">
         <div style="width:100%"><strong>Contatos:</strong> <span id="p-contacts"></span></div>
@@ -190,12 +133,7 @@
     <div style="width:100%">
         <div class="header-top">
             <div class="brand"><i class="fas fa-bolt"></i> SolarFlow v24</div>
-            <div class="header-actions" style="display:flex; align-items:center; gap:10px;">
-                <div class="db-status" id="dbStatus">Salvo</div>
-                <button class="btn-top-reset" onclick="resetProject()" style="background:#fee2e2; color:#ef4444; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.7rem; cursor:pointer; display:flex; align-items:center; gap:4px;">
-                    <i class="fas fa-trash-alt"></i> Limpar
-                </button>
-            </div>
+            <div class="db-status" id="dbStatus">Salvo</div>
         </div>
         <div class="tab-container">
             <button class="tab-btn active-sales" onclick="switchTab('sales')" id="tabSales"><i class="fas fa-user-tie"></i> Vendedor</button>
@@ -208,32 +146,31 @@
 
     <div class="project-card">
         <div class="input-row">
-            <div class="input-group"><span class="input-label">Cliente *</span><input type="text" id="clientName" class="input-modern required" placeholder="Nome Completo" oninput="validateAll()"></div>
-            <div class="input-group"><span class="input-label">Nº OS *</span><input type="text" id="osNumber" class="input-modern required" placeholder="0000" oninput="validateAll()"></div>
+            <div class="input-group"><span class="input-label">Cliente *</span><input type="text" id="clientName" class="input-modern required" placeholder="Nome Completo" oninput="autoSave()"></div>
+            <div class="input-group"><span class="input-label">Nº OS *</span><input type="text" id="osNumber" class="input-modern required" placeholder="0000" oninput="autoSave()"></div>
         </div>
         <div class="input-row">
-            <div class="input-group" style="flex:2"><span class="input-label">Endereço *</span><input type="text" id="addressInput" class="input-modern required" placeholder="Aguardando GPS..." oninput="validateAll()"></div>
+            <div class="input-group" style="flex:2"><span class="input-label">Endereço (Automático) *</span><input type="text" id="addressInput" class="input-modern required" placeholder="Toque em Capturar GPS..." oninput="autoSave()"></div>
             <div class="input-group"><span class="input-label">Potência</span><input type="text" id="sysPower" class="input-modern" placeholder="kWp" oninput="autoSave()"></div>
         </div>
     </div>
 
     <div id="view-sales" class="view-section active">
-        <div class="gps-btn sales-mode" onclick="initGPS('sales')"><i class="fas fa-map-marker-alt"></i> GPS do Local</div>
-        <div class="section-title" style="border-color:var(--sales)">Documentação</div>
+        <div class="gps-btn sales-mode" onclick="initGPS('sales')"><i class="fas fa-map-marker-alt"></i> 1. Capturar Endereço e GPS</div>
         
-        <div class="photo-card" id="card-list"><div class="card-header"><div><div class="card-title"><h4>Lista de Materiais</h4></div></div><button class="btn-aux" onclick="togglePDF(this)">Enviar PDF</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-list')"></div></div><div class="preview-container"><img id="img-list" class="preview-img"></div></div>
+        <div class="section-title" style="border-color:var(--sales)">Documentação</div>
+        <div class="photo-card" id="card-list"><div class="card-header"><div><div class="card-title"><h4>Lista de Materiais 📦</h4></div></div><button class="btn-aux" onclick="togglePDF(this)">Enviar PDF</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-list')"></div></div><div class="preview-container"><img id="img-list" class="preview-img"></div><div style="margin-top:5px; font-size:0.8rem;"><label><input type="checkbox" onchange="autoSave()"> Informar depois</label></div></div>
         <div class="photo-card" id="card-docs"><div class="card-header"><div><div class="card-title"><h4>Documentos (RG/CPF)</h4></div></div><button class="btn-aux" onclick="togglePDF(this)">Enviar PDF</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-docs')"></div></div><div class="preview-container"><img id="img-docs" class="preview-img"></div></div>
         <div class="photo-card" id="card-bill"><div class="card-header"><div><div class="card-title"><h4>Fatura Energia</h4></div></div><button class="btn-aux" onclick="togglePDF(this)">Enviar PDF</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-bill')"></div></div><div class="preview-container"><img id="img-bill" class="preview-img"></div></div>
         <div class="photo-card" id="card-benef"><div class="card-header"><div><div class="card-title"><h4>Beneficiárias</h4></div></div><div style="display:flex; gap:5px;"><button class="btn-aux" onclick="togglePDF(this)">PDF</button><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-benef')"></div></div><div class="preview-container"><img id="img-benef" class="preview-img"></div></div>
-
         <div class="project-card" style="border-left: 4px solid var(--sales)"><span class="input-label" style="color:var(--sales)">Procuração 📜</span><select class="select-modern" id="procSelect" onchange="autoSave()"><option value="">Selecione...</option><option value="Assinada">✅ Assinada</option><option value="Pendente">⚠️ Pendente</option><option value="NA">🚫 Não se aplica</option></select></div>
 
         <div class="photo-card" id="card-contact">
-            <div class="card-header"><div><div class="card-title"><h4>Contatos 📱📧</h4></div></div></div>
+            <div class="card-header"><div><div class="card-title"><h4>Contatos 📱📧</h4><p>Foto cartão ou digite.</p></div></div></div>
             <div class="action-row"><div class="btn-camera"><i class="fas fa-address-card"></i> Foto Cartão<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-contact')"></div></div>
             <div class="preview-container"><img id="img-contact" class="preview-img"></div>
             <div style="margin-top:15px; border-top:1px dashed #eee; padding-top:10px;">
-                <input type="tel" id="phoneInput" class="input-modern" placeholder="Telefone" oninput="autoSave()" style="margin-bottom:5px;">
+                <input type="tel" id="phoneInput" class="input-modern" placeholder="Telefone / WhatsApp" oninput="autoSave()" style="margin-bottom:5px;">
                 <input type="email" id="emailInput" class="input-modern" placeholder="E-mail" oninput="autoSave()">
             </div>
         </div>
@@ -241,35 +178,36 @@
         <div class="section-title" style="border-color:var(--sales)">Vistoria</div>
         <div class="photo-card" id="card-ent"><div class="card-header"><div><div class="card-title"><h4>Padrão de Entrada</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-ent')"></div></div><div class="preview-container"><img id="img-ent" class="preview-img"></div></div>
         <div class="photo-card" id="card-brk"><div class="card-header"><div><div class="card-title"><h4>Disjuntor Geral</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-brk')"></div></div><div class="preview-container"><img id="img-brk" class="preview-img"></div><input type="text" id="ampInput" class="input-modern" placeholder="Ou digite Amperagem" style="margin-top:10px;" oninput="autoSave()"></div>
-        <div class="photo-card" id="card-local"><div class="card-header"><div><div class="card-title"><h4>Local Instalação</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-local')"></div></div><div class="preview-container"><img id="img-local" class="preview-img"></div></div>
         <div class="photo-card" id="card-net"><div class="card-header"><div><div class="card-title"><h4>Rede (Trafo/Poste)</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Trafo<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-trafo')"></div><div class="btn-camera"><i class="fas fa-camera"></i> Poste<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-pole')"></div></div><div class="preview-container"><img id="img-trafo" class="preview-img" style="margin-bottom:5px;"><img id="img-pole" class="preview-img"></div></div>
+        <div class="photo-card" id="card-local"><div class="card-header"><div><div class="card-title"><h4>Local Instalação</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-local')"></div></div><div class="preview-container"><img id="img-local" class="preview-img"></div></div>
         <div class="project-card" style="border-left: 4px solid var(--sales)"><span class="input-label" style="color:var(--sales)">Titularidade 🔁</span><select class="select-modern" id="titleSelect" onchange="autoSave()"><option value="">Selecione...</option><option value="Sim">⚠️ Sim (Necessário)</option><option value="Nao">✅ Não (Correto)</option><option value="Andamento">⏳ Em andamento</option></select></div>
-        <div id="salesExtras" class="photo-grid"></div><button class="btn-add-extra" onclick="addNewExtraCard('sales')" style="width:100%; padding:15px; border:2px dashed var(--sales); background:#f3e8ff; color:var(--sales); border-radius:12px; font-weight:700; margin-top:10px; cursor:pointer;"><i class="fas fa-plus-circle"></i> Adicionar Foto Extra</button>
+        <div id="salesExtras" class="photo-grid"></div><button class="btn-add-extra" onclick="addNewExtraCard('sales')" style="color:var(--sales); border-color:var(--sales); background:#f3e8ff;"><i class="fas fa-plus-circle"></i> Adicionar Foto Extra</button>
     </div>
 
     <div id="view-install" class="view-section">
-        <div class="gps-btn" onclick="initGPS('install')"><i class="fas fa-satellite-dish"></i> GPS da Instalação</div>
+        <div class="gps-btn" onclick="initGPS('install')"><i class="fas fa-map-marker-alt"></i> 1. Capturar Endereço da Obra</div>
+        
         <div class="section-title">Execução</div>
-        <div class="photo-card" id="inst-roof"><div class="card-header"><div><div class="card-title"><h4>Telhado (Pré)</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-roof')"></div></div><div class="preview-container"><img id="img-i-roof" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-hooks"><div class="card-header"><div><div class="card-title"><h4>Fixação</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-hooks')"></div></div><div class="preview-container"><img id="img-i-hooks" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-pu"><div class="card-header"><div><div class="card-title"><h4>Vedação (PU)</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-pu')"></div></div><div class="preview-container"><img id="img-i-pu" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-mod"><div class="card-header"><div><div class="card-title"><h4>Módulos</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-mod')"></div></div><div class="preview-container"><img id="img-i-mod" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-cables"><div class="card-header"><div><div class="card-title"><h4>Org. Cabos</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-cables')"></div></div><div class="preview-container"><img id="img-i-cables" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-inv"><div class="card-header"><div><div class="card-title"><h4>Inversor (S/N)</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-inv')"></div></div><div class="preview-container"><img id="img-i-inv" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-inv-conn"><div class="card-header"><div><div class="card-title"><h4>Conexões</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-inv-conn')"></div></div><div class="preview-container"><img id="img-i-inv-conn" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-inv-vis"><div class="card-header"><div><div class="card-title"><h4>Visor Ligado</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-inv-vis')"></div></div><div class="preview-container"><img id="img-i-inv-vis" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-sbox"><div class="card-header"><div><div class="card-title"><h4>String Box</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-sbox')"></div></div><div class="preview-container"><img id="img-i-sbox" class="preview-img"></div></div>
+        <div class="photo-card" id="inst-roof"><div class="card-header"><div><div class="card-title"><h4>Telhado (Pré)</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-roof')"></div></div><div class="preview-container"><img id="img-i-roof" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-hooks"><div class="card-header"><div><div class="card-title"><h4>Fixação</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-hooks')"></div></div><div class="preview-container"><img id="img-i-hooks" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-pu"><div class="card-header"><div><div class="card-title"><h4>Vedação (PU)</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-pu')"></div></div><div class="preview-container"><img id="img-i-pu" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-mod"><div class="card-header"><div><div class="card-title"><h4>Módulos</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-mod')"></div></div><div class="preview-container"><img id="img-i-mod" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-cables"><div class="card-header"><div><div class="card-title"><h4>Org. Cabos</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-cables')"></div></div><div class="preview-container"><img id="img-i-cables" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-inv"><div class="card-header"><div><div class="card-title"><h4>Inversor (S/N)</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-inv')"></div></div><div class="preview-container"><img id="img-i-inv" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-inv-conn"><div class="card-header"><div><div class="card-title"><h4>Conexões</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-inv-conn')"></div></div><div class="preview-container"><img id="img-i-inv-conn" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-inv-vis"><div class="card-header"><div><div class="card-title"><h4>Visor Ligado</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-inv-vis')"></div></div><div class="preview-container"><img id="img-i-inv-vis" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-sbox"><div class="card-header"><div><div class="card-title"><h4>String Box</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-sbox')"></div></div><div class="preview-container"><img id="img-i-sbox" class="preview-img"><div class="watermark-caption"></div></div></div>
         
         <div class="section-title">Elétrica</div>
-        <div class="photo-card" id="inst-ac"><div class="card-header"><div><div class="card-title"><h4>Disjuntor AC</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-ac')"></div></div><div class="preview-container"><img id="img-i-ac" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-meas"><div class="card-header"><div><div class="card-title"><h4>Medições</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-meas')"></div></div><div class="preview-container"><img id="img-i-meas" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-gnd"><div class="card-header"><div><div class="card-title"><h4>Aterramento</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-gnd')"></div></div><div class="preview-container"><img id="img-i-gnd" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-conn"><div class="card-header"><div><div class="card-title"><h4>Ponto Conexão</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-conn')"></div></div><div class="preview-container"><img id="img-i-conn" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-meter"><div class="card-header"><div><div class="card-title"><h4>Medidor+Placa</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-meter')"></div></div><div class="preview-container"><img id="img-i-meter" class="preview-img"></div></div>
+        <div class="photo-card" id="inst-ac"><div class="card-header"><div><div class="card-title"><h4>Disjuntor AC</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-ac')"></div></div><div class="preview-container"><img id="img-i-ac" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-meas"><div class="card-header"><div><div class="card-title"><h4>Medições</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-meas')"></div></div><div class="preview-container"><img id="img-i-meas" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-gnd"><div class="card-header"><div><div class="card-title"><h4>Aterramento</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-gnd')"></div></div><div class="preview-container"><img id="img-i-gnd" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-conn"><div class="card-header"><div><div class="card-title"><h4>Ponto Conexão</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-conn')"></div></div><div class="preview-container"><img id="img-i-conn" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-meter"><div class="card-header"><div><div class="card-title"><h4>Medidor+Placa</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-camera"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-meter')"></div></div><div class="preview-container"><img id="img-i-meter" class="preview-img"><div class="watermark-caption"></div></div></div>
         
         <div class="section-title">Entrega</div>
-        <div class="photo-card" id="inst-app"><div class="card-header"><div><div class="card-title"><h4>App Online</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-image"></i> Upload<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-i-app')"></div></div><div class="preview-container"><img id="img-i-app" class="preview-img"></div></div>
-        <div class="photo-card" id="inst-clean"><div class="card-header"><div><div class="card-title"><h4>Limpeza</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-broom"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-clean')"></div></div><div class="preview-container"><img id="img-i-clean" class="preview-img"></div></div>
+        <div class="photo-card" id="inst-app"><div class="card-header"><div><div class="card-title"><h4>App Online</h4></div></div></div><div class="action-row"><div class="btn-camera"><i class="fas fa-image"></i> Upload<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-i-app')"></div></div><div class="preview-container"><img id="img-i-app" class="preview-img"><div class="watermark-caption"></div></div></div>
+        <div class="photo-card" id="inst-clean"><div class="card-header"><div><div class="card-title"><h4>Limpeza</h4></div></div><button class="btn-aux" onclick="toggleNA(this)">N/A</button></div><div class="action-row"><div class="btn-camera"><i class="fas fa-broom"></i> Foto<input type="file" class="file-input" accept="image/*" capture="environment" onchange="processImage(this, 'img-i-clean')"></div></div><div class="preview-container"><img id="img-i-clean" class="preview-img"><div class="watermark-caption"></div></div></div>
 
         <div id="installExtrasContainer" class="photo-grid"></div>
         <button class="btn-add-extra" onclick="addNewExtraCard('install')" style="width:100%; padding:15px; border:2px dashed var(--primary); color:var(--primary); border-radius:12px; font-weight:700; margin-top:10px; cursor:pointer;"><i class="fas fa-plus-circle"></i> Adicionar Foto Extra</button>
@@ -278,27 +216,24 @@
     <div class="validation-box">
         <span class="input-label">Técnico Responsável *</span>
         <input type="text" id="techName" class="input-modern required" placeholder="Seu Nome" oninput="validateAll()">
-        
         <div class="photo-card required-card" id="card-selfie" style="border:2px solid #0044cc; margin-top:15px;">
             <div class="card-header"><div><div class="card-title" style="color:#0044cc">Selfie de Validação *</div></div></div>
             <div class="action-row"><div class="btn-camera" style="background:#eff6ff; color:#0044cc; border-color:#0044cc"><i class="fas fa-user-check"></i> Selfie<input type="file" class="file-input" accept="image/*" capture="user" onchange="processImage(this, 'img-selfie', true)"></div></div>
             <div class="preview-container"><img id="img-selfie" class="preview-img"><div class="watermark-caption"></div></div>
         </div>
-        
         <div class="photo-card" id="card-client-pic" style="border:2px solid #16a34a; margin-top:15px;">
             <div class="card-header"><div><div class="card-title" style="color:#16a34a">Foto Cliente (Aceite)</div></div></div>
             <div class="action-row"><div class="btn-camera" style="background:#f0fdf4; color:#16a34a; border-color:#16a34a"><i class="fas fa-id-badge"></i> Foto Cliente<input type="file" class="file-input" accept="image/*" onchange="processImage(this, 'img-client-pic', true)"></div></div>
             <div class="preview-container"><img id="img-client-pic" class="preview-img"><div class="watermark-caption"></div></div>
         </div>
     </div>
-
 </div>
 
-<div class="fab-footer">
+<div class="share-footer">
     <div class="validation-msg" id="valMsg">Preencha campos obrigatórios!</div>
     <div class="share-row">
-        <button class="btn-big btn-pdf" onclick="tryGeneratePDF()"><i class="fas fa-file-pdf"></i> GERAR PDF</button>
-        <button class="btn-big btn-whatsapp" onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i> ENVIAR</button>
+        <button class="btn-big btn-pdf" id="btnPdf" onclick="tryGeneratePDF()"><i class="fas fa-file-pdf"></i> GERAR PDF</button>
+        <button class="btn-big btn-whatsapp" id="btnWhatsapp" onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i> ENVIAR</button>
         <button class="btn-big btn-telegram" onclick="share('telegram')"><i class="fab fa-telegram-plane"></i></button>
     </div>
     <button onclick="if(confirm('Limpar tudo?')) resetProject()" class="btn-reset" style="width:100%; margin-top:5px;">Limpar e Novo</button>
@@ -329,55 +264,15 @@
     }
     switchTab('sales');
 
-    function validateAll() {
-        const client = document.getElementById('clientName').value.trim();
-        const os = document.getElementById('osNumber').value.trim();
-        const addr = document.getElementById('addressInput').value.trim();
-        const tech = document.getElementById('techName').value.trim();
-        const selfie = document.getElementById('img-selfie').src;
-        const hasSelfie = selfie && selfie.includes('data:');
-        
-        const isValid = client && os && addr && tech && hasSelfie;
-        const btns = document.querySelectorAll('.btn-big');
-        const msg = document.getElementById('valMsg');
-
-        if(isValid) { btns.forEach(b => b.style.opacity=1); msg.style.display='none'; }
-        else { btns.forEach(b => b.style.opacity=0.5); msg.style.display='block'; }
-        autoSave();
-    }
-
-    function tryGeneratePDF() { if(confirmVal()) window.print(); }
-
-    function share(app) {
-        if(confirmVal()) {
-            window.print();
-            setTimeout(() => {
-                const client = document.getElementById('clientName').value;
-                const os = document.getElementById('osNumber').value;
-                const text = `✅ *RELATÓRIO ${currentTab==='sales'?'VENDAS':'INSTALAÇÃO'}*\n👤 Cliente: ${client}\n🔢 OS: ${os}\n📍 GPS: ${gpsCoords}\n\n📄 *PDF Gerado.* Anexe abaixo.`;
-                const url = app === 'whatsapp' ? `https://wa.me/?text=${encodeURIComponent(text)}` : `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
-                window.open(url, '_blank');
-            }, 1000);
-        }
-    }
-
-    function confirmVal() {
-        if(document.getElementById('valMsg').style.display !== 'none') {
-            alert("Preencha todos os campos obrigatórios e tire a Selfie!");
-            return false;
-        }
-        return true;
-    }
-
     function initGPS(type) {
-        const btn = document.querySelector(type === 'sales' ? '.gps-btn.sales' : '.gps-btn');
+        const btn = document.querySelector(type === 'sales' ? '.gps-btn.sales-mode' : '.gps-btn');
         const input = document.getElementById('addressInput');
         btn.innerText = "Buscando...";
         navigator.geolocation.getCurrentPosition(async (pos) => {
             const coords = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
-            gpsCoords = coords;
             btn.innerHTML = `<i class="fas fa-check"></i> GPS: ${coords}`;
-            if(type==='sales') {
+            gpsCoords = coords;
+            if(type==='sales' || !input.value) {
                 try {
                     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
                     const data = await res.json();
@@ -390,10 +285,7 @@
 
     function processImage(input, imgId, isSelfie = false) {
         if (input.files[0]) {
-            const reader = new FileReader();
-            const btn = input.parentElement;
-            const imgEl = document.getElementById(imgId);
-            const card = input.closest('.photo-card');
+            const reader = new FileReader(); const btn = input.parentElement; const imgEl = document.getElementById(imgId); const card = input.closest('.photo-card');
             btn.style.opacity = 0.5;
             reader.onload = (e) => {
                 const img = new Image(); img.src = e.target.result;
@@ -408,8 +300,7 @@
                     const date = new Date().toLocaleString();
                     const client = document.getElementById('clientName').value;
                     const t1 = isSelfie ? `VALIDAÇÃO: ${document.getElementById('techName').value}` : `${client} | ${date}`;
-                    ctx.fillText(t1, 20, h-25);
-                    ctx.font="12px sans-serif"; ctx.fillText(gpsCoords, 20, h-10);
+                    ctx.fillText(t1, 20, h-25); ctx.font="12px sans-serif"; ctx.fillText(gpsCoords, 20, h-10);
                     const final = cvs.toDataURL('image/jpeg', 0.7);
                     imgEl.src = final; imgEl.parentElement.style.display = 'block';
                     if(imgEl.nextElementSibling) imgEl.nextElementSibling.innerText = `${date} | ${gpsCoords}`;
@@ -438,7 +329,7 @@
         const title = document.getElementById('title_'+uid).value;
         const img = document.getElementById(uid).src;
         const caption = document.getElementById(uid).nextElementSibling.innerText;
-        if(title || (img && img.length > 100)) saveToDB(uid, { src: img, title: title, isExtra: true, type: uid.includes('sales') ? 'sales' : 'install' });
+        if(title || (img && img.length > 100)) saveToDB(uid, { src: img, caption: caption, title: title, isExtra: true, type: uid.includes('sales') ? 'sales' : 'install' });
     }
     function removeExtra(uid) { if(confirm("Remover?")) { document.getElementById('card_'+uid).remove(); const tx = db.transaction([storeName], "readwrite"); tx.objectStore(storeName).delete(uid); }}
 
@@ -455,8 +346,8 @@
             client: document.getElementById('clientName').value, os: document.getElementById('osNumber').value,
             addr: document.getElementById('addressInput').value, pow: document.getElementById('sysPower').value,
             phone: document.getElementById('phoneInput').value, email: document.getElementById('emailInput').value,
-            amp: document.getElementById('ampInput').value, tech: document.getElementById('techName').value,
-            proc: document.getElementById('procSelect').value, title: document.getElementById('titleSelect').value
+            amp: document.getElementById('ampInput').value, proc: document.getElementById('procSelect').value,
+            title: document.getElementById('titleSelect').value
         };
         saveToDB("textData", data); updatePrint(); validateAll();
     }
@@ -485,17 +376,58 @@
                     }
                 }
             });
-            initGPS();
+            initGPS('sales');
         };
     }
+
     function updatePrint() {
         document.getElementById('p-client').innerText = document.getElementById('clientName').value;
         document.getElementById('p-os').innerText = document.getElementById('osNumber').value;
         document.getElementById('p-date').innerText = new Date().toLocaleDateString();
-        document.getElementById('p-address').innerText = document.getElementById('addressInput').value;
+        document.getElementById('p-address').innerHTML = document.getElementById('addressInput').value + ` <b>(GPS: ${gpsCoords})</b>`;
         const p = document.getElementById('phoneInput').value; const e = document.getElementById('emailInput').value;
         document.getElementById('p-contacts').innerText = `${p} | ${e}`;
     }
+
+    function validateAll() {
+        const client = document.getElementById('clientName').value.trim();
+        const os = document.getElementById('osNumber').value.trim();
+        const addr = document.getElementById('addressInput').value.trim();
+        const tech = document.getElementById('techName').value.trim();
+        const selfie = document.getElementById('img-selfie').src;
+        const hasSelfie = selfie && selfie.includes('data:');
+        
+        const isValid = client && os && addr && tech && hasSelfie;
+        const btns = document.querySelectorAll('.btn-share');
+        const msg = document.getElementById('valMsg');
+
+        if(isValid) { btns.forEach(b => b.style.opacity=1); msg.style.display='none'; }
+        else { btns.forEach(b => b.style.opacity=0.5); msg.style.display='block'; }
+    }
+
+    function tryGeneratePDF() { if(confirmVal()) window.print(); }
+
+    function share(app) {
+        if(confirmVal()) {
+            window.print();
+            setTimeout(() => {
+                const client = document.getElementById('clientName').value;
+                const os = document.getElementById('osNumber').value;
+                const text = `✅ *RELATÓRIO ${currentTab==='sales'?'VENDAS':'INSTALAÇÃO'}*\n👤 Cliente: ${client}\n🔢 OS: ${os}\n📍 GPS: ${gpsCoords}\n\n📄 *PDF Gerado.* Anexe abaixo.`;
+                const url = app === 'whatsapp' ? `https://wa.me/?text=${encodeURIComponent(text)}` : `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+            }, 1000);
+        }
+    }
+
+    function confirmVal() {
+        if(document.getElementById('valMsg').style.display !== 'none') {
+            alert("Preencha todos os campos obrigatórios e tire a Selfie!");
+            return false;
+        }
+        return true;
+    }
+
     function resetProject() { if(confirm("Apagar tudo?")) { const tx = db.transaction([storeName], "readwrite"); tx.objectStore(storeName).clear(); tx.oncomplete = () => location.reload(); } }
 </script>
 </body>
